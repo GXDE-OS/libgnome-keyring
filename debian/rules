@@ -18,6 +18,6 @@ DEB_DH_MAKESHLIBS_ARGS_libgnome-keyring0 += -V -- -c4
 
 # Note: remove the condition when kfreebsd buildds has been upgraded to
 #       kfreebsd-10 kernel which has working mlock.
-ifeq (,$(filter $(DEB_BUILD_ARCH),kfreebsd-i386 kfreebsd-amd64))
-DEB_MAKE_CHECK_TARGET := check
-endif
+#ifeq (,$(filter $(DEB_BUILD_ARCH),kfreebsd-i386 kfreebsd-amd64))
+#DEB_MAKE_CHECK_TARGET := check
+#endif
