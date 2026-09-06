@@ -1,23 +1,24 @@
 #!/usr/bin/make -f
 
-include /usr/share/cdbs/1/rules/debhelper.mk
-include /usr/share/cdbs/1/rules/autoreconf.mk
-include /usr/share/cdbs/1/class/gnome.mk
-include /usr/share/gnome-pkg-tools/1/rules/uploaders.mk
--include /usr/share/gnome-pkg-tools/1/rules/gnome-get-source.mk
-
 export DEB_LDFLAGS_MAINT_APPEND := -Wl,-O1 -Wl,-z,defs -Wl,--as-needed
-include /usr/share/dpkg/buildflags.mk
+export GPGRT_CONFIG ?= gpgrt-config
+DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
 
-DEB_DH_AUTORECONF_ARGS=--as-needed
+%:
+	dh $@ --with gnome
 
-DEB_CONFIGURE_EXTRA_FLAGS += --enable-gtk-doc \
-                             --libdir=/usr/lib/$(DEB_HOST_MULTIARCH)
+override_dh_auto_configure:
+	dh_auto_configure -- \
+		--enable-gtk-doc \
+		--libdir=/usr/lib/$(DEB_HOST_MULTIARCH)
 
-DEB_DH_MAKESHLIBS_ARGS_libgnome-keyring0 += -V -- -c4
+# The 2014 test suite uses a Python 2-only mock Secret Service whenever it
+# finds a session bus.  Package builds launched from a desktop terminal must
+# not inherit or interact with the user's real session bus.  With no bus the
+# two mock-service tests use their supported skip path, while the remaining
+# tests still run normally.
+override_dh_auto_test:
+	env -u DBUS_SESSION_BUS_ADDRESS dh_auto_test
 
-# Note: remove the condition when kfreebsd buildds has been upgraded to
-#       kfreebsd-10 kernel which has working mlock.
-#ifeq (,$(filter $(DEB_BUILD_ARCH),kfreebsd-i386 kfreebsd-amd64))
-#DEB_MAKE_CHECK_TARGET := check
-#endif
+override_dh_makeshlibs:
+	dh_makeshlibs -plibgnome-keyring0 -V -- -c4
