@@ -1,8 +1,12 @@
-libgnome-keyring (3.12.0-2) UNRELEASED; urgency=medium
+libgnome-keyring (3.12.0-3) UNRELEASED; urgency=medium
 
+  [ gfdgd_xi ]
   * 修改构建依赖
 
- -- gfdgd_xi <3025613752@qq.com>  Sat, 09 Nov 2024 21:34:07 +0800
+  [ CharOfString ]
+  * Modernize the Debian build rules for current GNOME tooling.
+
+ -- CharOfString <root@charofstring.cc>  Sun, 06 Sep 2026 17:18:42 -0500
 
 libgnome-keyring (3.12.0-1) unstable; urgency=low
 
