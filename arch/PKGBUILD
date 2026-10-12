@@ -1,0 +1,45 @@
+# Maintainer: CharOfString <root@charofstring.cc>
+pkgname=libgnome-keyring-git
+pkgver=3.12.0
+pkgrel=3
+pkgdesc='GNOME keyring client library (retired upstream, maintained by GXDE)'
+arch=('x86_64' 'aarch64')
+url="https://github.com/GXDE-OS/libgnome-keyring"
+license=('LGPL-2.0-or-later' 'GPL-2.0-or-later')
+depends=('glib2' 'dbus' 'libgcrypt' 'glibc')
+optdepends=('gnome-keyring: secret storage backend')
+makedepends=('git' 'intltool' 'gobject-introspection' 'vala')
+provides=("libgnome-keyring=$pkgver")
+conflicts=('libgnome-keyring')
+source=()
+sha512sums=()
+
+# 直接使用 PKGBUILD 所在的 git 仓库作为源码 ・ Build from the git checkout this PKGBUILD lives in.
+_srcroot() {
+  git -C "$startdir" rev-parse --show-toplevel
+}
+
+build() {
+  # 与 debian/rules 相同：新版 libgcrypt 不再提供 libgcrypt-config
+  # Same as debian/rules: newer libgcrypt no longer ships libgcrypt-config.
+  export GPGRT_CONFIG=gpgrt-config
+  # git 检出后文件时间戳相同，关闭维护者模式以免 make 试图用另一版本的 automake 重新生成
+  # Files share one mtime after a git checkout, disable maintainer mode so
+  # make does not try to regenerate them with another automake version.
+  mkdir -p build
+  cd build
+  "$(_srcroot)/configure" \
+    --prefix=/usr \
+    --sysconfdir=/etc \
+    --localstatedir=/var \
+    --libexecdir=/usr/lib \
+    --disable-static \
+    --disable-gtk-doc \
+    --disable-maintainer-mode
+  sed -i 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
+  make
+}
+
+package() {
+  make -C build DESTDIR="$pkgdir" install
+}
