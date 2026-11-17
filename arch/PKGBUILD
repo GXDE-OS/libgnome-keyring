@@ -1,5 +1,5 @@
 # Maintainer: CharOfString <root@charofstring.cc>
-pkgname=libgnome-keyring-git
+pkgname=libgnome-keyring
 pkgver=3.12.0
 pkgrel=3
 pkgdesc='GNOME keyring client library (retired upstream, maintained by GXDE)'
@@ -9,8 +9,9 @@ license=('LGPL-2.0-or-later' 'GPL-2.0-or-later')
 depends=('glib2' 'dbus' 'libgcrypt' 'glibc')
 optdepends=('gnome-keyring: secret storage backend')
 makedepends=('git' 'intltool' 'gobject-introspection' 'vala')
-provides=("libgnome-keyring=$pkgver")
-conflicts=('libgnome-keyring')
+provides=("libgnome-keyring-git=$pkgver")
+conflicts=('libgnome-keyring-git')
+replaces=('libgnome-keyring-git')
 source=()
 sha512sums=()
 
